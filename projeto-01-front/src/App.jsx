@@ -1,13 +1,20 @@
 import { Header } from "./components/Header/Header"
 import './global.css'
 
+import styles from './App.module.css'
+import { Card } from "./components/Card/Card"
+
 function App() {
 
   return (
     <div>
       <Header/>
-    <h1>Hello MUNDO</h1>
-
+      <div className={styles.wrapper}>
+        <Card/>
+        <main>
+          POST
+        </main>
+      </div>
     </div>
   )
 }
