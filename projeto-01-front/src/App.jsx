@@ -3,6 +3,7 @@ import './global.css'
 
 import styles from './App.module.css'
 import { Card } from "./components/Card/Card"
+import { Post } from "./components/Post/Post"
 
 function App() {
 
@@ -12,7 +13,8 @@ function App() {
       <div className={styles.wrapper}>
         <Card/>
         <main>
-          POST
+          <Post/>
+          <Post/>
         </main>
       </div>
     </div>
