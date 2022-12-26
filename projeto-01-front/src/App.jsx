@@ -14,7 +14,6 @@ function App() {
         <Card/>
         <main>
           <Post/>
-          <Post/>
         </main>
       </div>
     </div>
