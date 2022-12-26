@@ -1,29 +1,51 @@
 import { ThumbsUp, Trash } from "phosphor-react";
+import { format, formatDistanceToNow } from "date-fns";
+import ptBR from "date-fns/locale/pt-BR";
+import { useState } from "react";
 import { Avatar } from "../Avatar/Avatar";
+
 import styles from "./Comment.module.css";
 
 export function Comment({ content, onDeleteComment }) {
+  const [likeCount, setLikeCount] = useState(0);
+
+  const publishedDateFormatted = format(
+    Date.now(),
+    "dd 'de' LLLL 'ás' HH:mm'h'",
+    {
+      locale: ptBR,
+    }
+  );
+
+  const publishedDateRelativeToNow = formatDistanceToNow(Date.now(), {
+    locale: ptBR,
+    addSuffix: true,
+  });
+
   function handleDeleteComment() {
     onDeleteComment(content);
+  }
+
+  function handleLikeComment() {
+    setLikeCount(likeCount + 1);
   }
 
   return (
     <div className={styles.comment}>
       <Avatar
         hasBorder={false}
-        src="https://images.unsplash.com/photo-1628501899963-43bb8e2423e1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=50"
+        src="https://avatars.githubusercontent.com/u/54951528?v=4"
       />
 
       <div className={styles.commentBox}>
         <div className={styles.commentContent}>
           <header>
             <div className={styles.authorAndTime}>
-              <strong>Kelly Key</strong>
+              <strong>Kleber Lima</strong>
               <time
-                dateTime="2022-12-25 20:00:00"
-                title="25 de Dezembro de 2022 ás 20 horas"
+                title={publishedDateFormatted}
               >
-                Cerca de 1h atrás
+                {publishedDateRelativeToNow}
               </time>
             </div>
             <button onClick={handleDeleteComment} title="Deletar comentário">
@@ -34,9 +56,9 @@ export function Comment({ content, onDeleteComment }) {
         </div>
 
         <footer>
-          <button>
+          <button onClick={handleLikeComment}>
             <ThumbsUp />
-            Aplaudir <span>20</span>
+            Aplaudir <span>{likeCount}</span>
           </button>
         </footer>
       </div>
