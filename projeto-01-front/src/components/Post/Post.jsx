@@ -1,37 +1,66 @@
+import { format, formatDistanceToNow } from "date-fns";
+import ptBR from "date-fns/locale/pt-BR";
+import { useState } from "react";
 import { Avatar } from "../Avatar/Avatar";
 import { Comment } from "../Comment/Comment";
 import styles from "./Post.module.css";
 
-export function Post() {
+export function Post({ author, publishedAt, content }) {
+  const [comments, setComments] = useState(["Muito Legal"]);
+
+  const [newCommentText, setNewCommentText] = useState("");
+
+  const publishedDateFormatted = format(
+    publishedAt,
+    "dd 'de' LLLL 'ás' HH:mm'h'",
+    {
+      locale: ptBR,
+    }
+  );
+
+  const publishedDateRelativeToNow = formatDistanceToNow(publishedAt, {
+    locale: ptBR,
+    addSuffix: true,
+  });
+
+  function handleCreateNewComment() {
+    event.preventDefault();
+    setComments([...comments, newCommentText]);
+    setNewCommentText('');
+  }
+
+  function handleNewCommentChange() {
+    setNewCommentText(event.target.value);
+  }
+
   return (
     <article className={styles.post}>
       <header>
         <div className={styles.author}>
-          <Avatar src="https://images.unsplash.com/photo-1610041321420-a596dd14ebc9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=350&q=50" />
+          <Avatar src={author.avatarUrl} />
           <div className={styles.authorInfo}>
-            <strong>Tiago Silva</strong>
-            <span>Gamer</span>
+            <strong>{author.name}</strong>
+            <span>{author.role}</span>
           </div>
         </div>
 
         <time
-          dateTime="2022-12-25 09:00:00"
-          title="25 de Dezembro de 2022 ás 9 horas"
+          dateTime={publishedAt.toISOString()}
+          title={publishedDateFormatted}
         >
-          Publicado há 1h
+          {publishedDateRelativeToNow}
         </time>
       </header>
       <div className={styles.content}>
-        <p>Fala Galera 👏</p>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nobis error
-          molestiae illum facere neque nostrum recusandae pariatur veniam
-          veritatis, dignissimos dolorem accusamus architecto deserunt, sequi
-          consequatur assumenda eius expedita perspiciatis.
-        </p>
-        <p>
-          👉 <a href="#">tiago.silva/gamer-online</a>
-        </p>
+        {content.map((item) => {
+          return item.type === "paragraph" ? (
+            <p key={item.content}>{item.content}</p>
+          ) : (
+            <p key={item.content}>
+              <a  href="#">{item.content}</a>
+            </p>
+          );
+        })}
         <p>
           <a href="#">#projeto </a>
           <a href="#">#bootcamp </a>
@@ -39,15 +68,22 @@ export function Post() {
         </p>
       </div>
 
-      <form className={styles.commentForm}>
+      <form onSubmit={handleCreateNewComment} className={styles.commentForm}>
         <strong>Deixe o seu feedback</strong>
-        <textarea placeholder="Deixe um comentário" />
+        <textarea
+          name="comment"
+          placeholder="Deixe um comentário"
+          onChange={handleNewCommentChange}
+          value={newCommentText}
+        />
         <footer>
           <button type="submit">Publicar</button>
         </footer>
       </form>
       <div className={styles.commentList}>
-        <Comment />
+        {comments.map((comment) => {
+          return <Comment key={comment} content={comment} />
+        })}
       </div>
     </article>
   );
